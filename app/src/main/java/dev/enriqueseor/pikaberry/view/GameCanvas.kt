@@ -21,6 +21,8 @@ class GameCanvas(context: Context?, attrs: AttributeSet?) : View(context, attrs)
     private var level: Int = 2
     private var score: Int = 0
     private var lives: Int = 3
+    private var lastSpawnTime: Long = 0
+    private val spawnInterval = 500L
 
     private lateinit var pikachu: Pikachu
     private val berries = mutableListOf<Berry>()
@@ -34,34 +36,16 @@ class GameCanvas(context: Context?, attrs: AttributeSet?) : View(context, attrs)
         val pikachuRadius = 100
         pikachu = Pikachu(canvasWidth / 2, canvasHeight - 100, pikachuRadius, context)
 
-        val berryHeights = generateUniqueNegativeHeights(3)
-        for (i in 0 until 3) {
-            val berry = Berry((0..canvasWidth).random(), berryHeights[i], resources)
-            berries.add(berry)
-        }
-
-        val rockHeights = generateUniqueNegativeHeights(3)
-        for (i in 0 until 3) {
-            val rock = Rock((0..canvasWidth).random(), rockHeights[i], context)
-            rocks.add(rock)
-        }
+        berries.clear()
+        rocks.clear()
 
         heart = Heart(
             x = (0..canvasWidth).random(),
-            y = (-15000..-12000).random() * level,
+            y = (-20000..-15000).random() * level,
             context = context
         )
 
         scoreboard = Scoreboard(canvasWidth, canvasHeight, score, lives, context)
-    }
-
-    private fun generateUniqueNegativeHeights(count: Int): List<Int> {
-        val uniqueHeights = mutableSetOf<Int>()
-        while (uniqueHeights.size < count) {
-            val randomHeight = -(0 until 1500).random()
-            uniqueHeights.add(randomHeight)
-        }
-        return uniqueHeights.toList()
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldW: Int, oldH: Int) {
@@ -100,19 +84,35 @@ class GameCanvas(context: Context?, attrs: AttributeSet?) : View(context, attrs)
         /******************************************************
          *                       BERRIES                      *
          ******************************************************/
-        for (berry in berries) {
+        spawnObjects()
+
+        val iteratorBerries = berries.iterator()
+        while (iteratorBerries.hasNext()) {
+            val berry = iteratorBerries.next()
             berry.draw(canvas, radius)
             berry.updatePosition(canvasWidth, canvasHeight, baseSpeed, level)
-            onBerryCollision(berry)
+
+            if (checkBerryCollisionAndRemove(berry)) {
+                iteratorBerries.remove()
+            } else if (berry.y > canvasHeight + radius) {
+                iteratorBerries.remove()
+            }
         }
 
         /*****************************************************
          *                        ROCKS                      *
          *****************************************************/
-        for (rock in rocks) {
+        val iteratorRocks = rocks.iterator()
+        while (iteratorRocks.hasNext()) {
+            val rock = iteratorRocks.next()
             rock.draw(canvas, radius)
             rock.updatePosition(canvasWidth, canvasHeight, baseSpeed, level)
-            onRockCollision(rock)
+
+            if (checkRockCollisionAndRemove(rock)) {
+                iteratorRocks.remove()
+            } else if (rock.y > canvasHeight + radius) {
+                iteratorRocks.remove()
+            }
         }
 
         /*****************************************************
@@ -129,27 +129,44 @@ class GameCanvas(context: Context?, attrs: AttributeSet?) : View(context, attrs)
         scoreboard.updateScore(score, lives)
     }
 
-    private fun onBerryCollision(berry: Berry) {
+    private fun checkBerryCollisionAndRemove(berry: Berry): Boolean {
         val berryPointsArray = intArrayOf(1, 2, 3, 5, 10)
         if (RectF.intersects(pikachu.rect, berry.rect)) {
             val berryPoints = berryPointsArray[berry.type]
             score += berryPoints
             gameEventListener?.onBerryCollected()
             gameEventListener?.onScoreUpdated(score)
-            berry.x = (0..canvasWidth).random()
-            berry.y = 0
-            berry.type = berry.customRandomBerryType()
-            berry.setDrawable()
+            return true
         }
+        return false
     }
 
-    private fun onRockCollision(rock: Rock) {
+    private fun checkRockCollisionAndRemove(rock: Rock): Boolean {
         if (RectF.intersects(pikachu.rect, rock.rect)) {
-            rock.x = (0..canvasWidth).random()
-            rock.y = 0
             gameEventListener?.onRockCollision()
             if (lives > 0) {
                 lives -= 1
+            }
+            return true
+        }
+        return false
+    }
+
+    private fun spawnObjects() {
+        val currentTime = System.currentTimeMillis()
+
+        if (currentTime - lastSpawnTime > spawnInterval) {
+            lastSpawnTime = currentTime
+
+            val spawnRoll = (0..100).random()
+
+            if (spawnRoll < 70) {
+                val newBerry = Berry((0..canvasWidth).random(), 0, resources)
+                berries.add(newBerry)
+
+            } else {
+                val newRock = Rock((0..canvasWidth).random(), 0, context)
+                rocks.add(newRock)
             }
         }
     }
