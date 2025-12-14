@@ -22,11 +22,13 @@ class GameCanvas(context: Context?, attrs: AttributeSet?) : View(context, attrs)
     private var score: Int = 0
     private var lives: Int = 3
     private var lastSpawnTime: Long = 0
-    private val spawnInterval = 500L
+    private val spawnInterval = 900L
 
     private lateinit var pikachu: Pikachu
     private val berries = mutableListOf<Berry>()
     private val rocks = mutableListOf<Rock>()
+    private val MAX_BERRIES_ON_SCREEN = 6
+    private val MAX_ROCKS_ON_SCREEN = 6
     private lateinit var heart: Heart
     private lateinit var scoreboard: Scoreboard
 
@@ -154,19 +156,21 @@ class GameCanvas(context: Context?, attrs: AttributeSet?) : View(context, attrs)
 
     private fun spawnObjects() {
         val currentTime = System.currentTimeMillis()
-
         if (currentTime - lastSpawnTime > spawnInterval) {
             lastSpawnTime = currentTime
 
             val spawnRoll = (0..100).random()
 
             if (spawnRoll < 70) {
-                val newBerry = Berry((0..canvasWidth).random(), 0, resources)
-                berries.add(newBerry)
-
+                if (berries.size < MAX_BERRIES_ON_SCREEN) {
+                    val newBerry = Berry((0..canvasWidth).random(), 0, resources)
+                    berries.add(newBerry)
+                }
             } else {
-                val newRock = Rock((0..canvasWidth).random(), 0, context)
-                rocks.add(newRock)
+                if (rocks.size < MAX_ROCKS_ON_SCREEN) {
+                    val newRock = Rock((0..canvasWidth).random(), 0, context)
+                    rocks.add(newRock)
+                }
             }
         }
     }
