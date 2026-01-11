@@ -1,7 +1,6 @@
 package dev.enriqueseor.pikaberry.ui.activities
 
 import android.content.Intent
-import android.media.SoundPool
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +9,7 @@ import dev.enriqueseor.pikaberry.core.GameEngine
 import dev.enriqueseor.pikaberry.utils.PlaylistManager
 import dev.enriqueseor.pikaberry.ui.components.GameCanvas
 import dev.enriqueseor.pikaberry.core.GameEventListener
+import dev.enriqueseor.pikaberry.utils.SoundManager
 
 class GameActivity : AppCompatActivity(), GameEventListener {
     private var levelNumber = 2
@@ -19,9 +19,7 @@ class GameActivity : AppCompatActivity(), GameEventListener {
     private lateinit var gameEngine: GameEngine
 
     private lateinit var playerName: String
-    private lateinit var soundPool: SoundPool
-    private lateinit var soundMap: Map<Int, Int>
-
+    private lateinit var soundManager: SoundManager
     private var playlistManager: PlaylistManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,23 +34,8 @@ class GameActivity : AppCompatActivity(), GameEventListener {
         gameEngine.level = levelNumber
         gameCanvas.engine = gameEngine
 
-        initializeSoundPool()
-        playlistManager()
-    }
-
-    private fun initializeSoundPool() {
-        soundPool = SoundPool.Builder().setMaxStreams(5).build()
-        soundMap = mapOf(
-            R.raw.geodude to soundPool.load(this, R.raw.geodude, 2),
-            R.raw.heart to soundPool.load(this, R.raw.heart, 3),
-            R.raw.berry to soundPool.load(this, R.raw.berry, 1)
-        )
-    }
-
-    private fun playSound(soundResource: Int) {
-        soundMap[soundResource]?.let { soundId ->
-            soundPool.play(soundId, 1f, 1f, 1, 0, 1f)
-        }
+        soundManager = SoundManager(this)
+        setupPlaylist()
     }
 
     override fun onTick() {
@@ -60,18 +43,16 @@ class GameActivity : AppCompatActivity(), GameEventListener {
     }
 
     override fun onBerryCollected() {
-        playSound(R.raw.berry)
+        soundManager.playBerrySound()
     }
 
     override fun onRockCollision() {
-        playSound(R.raw.geodude)
-        if (gameEngine.isGameOver()) {
-            onGameFinished()
-        }
+        soundManager.playRockSound()
+        if (gameEngine.isGameOver()) onGameFinished()
     }
 
     override fun onHeartCollected() {
-        playSound(R.raw.heart)
+        soundManager.playHeartSound()
     }
 
     override fun onScoreUpdated(newScore: Int) {}
@@ -91,7 +72,7 @@ class GameActivity : AppCompatActivity(), GameEventListener {
     override fun onDestroy() {
         super.onDestroy()
         playlistManager?.release()
-        soundPool.release()
+        soundManager.release()
     }
 
     private fun onGameFinished() {
@@ -106,7 +87,7 @@ class GameActivity : AppCompatActivity(), GameEventListener {
         finish()
     }
 
-    private fun playlistManager() {
+    private fun setupPlaylist() {
         playlistManager = PlaylistManager(this)
         val backgroundImageView = findViewById<ImageView>(R.id.backgroundImageView)
         playlistManager?.setOnSongChangeListener { data ->
