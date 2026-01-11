@@ -10,7 +10,6 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
     var lives = 3
     var level = 2
     private val baseSpeed = 10
-    private val spawnInterval = 900L
     private var lastSpawnTime = 0L
 
     lateinit var pikachu: Pikachu
@@ -33,11 +32,11 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
     fun update() {
         spawnObjects()
 
-        // Actualizar Corazón
+        // UPDATE HEART
         heart.updatePosition(canvasWidth, canvasHeight, baseSpeed, level)
         checkHeartCollision()
 
-        // Actualizar Berries
+        // UPDATE BERRIES
         val berryIterator = berries.iterator()
         while (berryIterator.hasNext()) {
             val berry = berryIterator.next()
@@ -47,12 +46,15 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
             }
         }
 
-        // Actualizar Rocks
+        // UPDATE ROCKS
         val rockIterator = rocks.iterator()
         while (rockIterator.hasNext()) {
             val rock = rockIterator.next()
             rock.updatePosition(canvasWidth, canvasHeight, baseSpeed, level)
             if (checkRockCollision(rock) || rock.y > canvasHeight + 100) {
+                if (rock.y > canvasHeight) {
+                    android.util.Log.d("GameDebug", "ROCA ELIMINADA POR SALIR DE PANTALLA")
+                }
                 rockIterator.remove()
             }
         }
@@ -60,9 +62,9 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
 
     private fun spawnObjects() {
         val currentTime = System.currentTimeMillis()
-        if (currentTime - lastSpawnTime > spawnInterval) {
+        if (currentTime - lastSpawnTime > getSpawnInterval()) {
             lastSpawnTime = currentTime
-            if ((0..100).random() < 70) {
+            if ((0..100).random() < 50) {
                 if (berries.size < 6) berries.add(
                     Berry(
                         (0..canvasWidth).random(),
@@ -73,6 +75,15 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
             } else {
                 if (rocks.size < 6) rocks.add(Rock((0..canvasWidth).random(), 0, context))
             }
+        }
+    }
+
+    private fun getSpawnInterval(): Long {
+        return when (level) {
+            1 -> 500L
+            2 -> 800L
+            3 -> 1200L
+            else -> 800L
         }
     }
 

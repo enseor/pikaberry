@@ -59,13 +59,6 @@ class Berry(var x: Int, var y: Int, private val resources: Resources) {
     }
 
     fun updatePosition(canvasWidth: Int, canvasHeight: Int, baseSpeed: Int, level: Int) {
-        if (y > canvasHeight) {
-            x = (0..canvasWidth).random()
-            y = 0
-            type = customRandomBerryType()
-            setDrawable()
-        } else {
-            y += baseSpeed * level
-        }
+        y += baseSpeed * level
     }
 }
