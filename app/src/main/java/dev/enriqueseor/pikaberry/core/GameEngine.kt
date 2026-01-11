@@ -49,7 +49,7 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
         canvasWidth = width
         canvasHeight = height
         pikachu = Pikachu(width / 2, height - 100, 100, context)
-        heart = Heart((0..width).random(), (-17500..-12500).random() * level, context)
+        heart = Heart((0..width).random(), (-17500..-12500).random(), context)
         berries.clear()
         rocks.clear()
     }
@@ -130,9 +130,13 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
     }
 
     private fun onHeartCollected() {
+        if (heart.y > canvasHeight) {
+            heart.x = (0..canvasWidth).random()
+            heart.y = (-17500..-12500).random()
+        }
         if (RectF.intersects(pikachu.rect, heart.rect)) {
             heart.x = (0..canvasWidth).random()
-            heart.y = (-17500..-12500).random() * level
+            heart.y = (-17500..-12500).random()
             if (lives < 3) lives++
             listener?.onHeartCollected()
         }
