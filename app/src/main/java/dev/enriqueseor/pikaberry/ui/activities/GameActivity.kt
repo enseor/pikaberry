@@ -9,6 +9,7 @@ import android.os.Looper
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import dev.enriqueseor.pikaberry.R
+import dev.enriqueseor.pikaberry.core.GameEngine
 import dev.enriqueseor.pikaberry.utils.PlaylistManager
 import dev.enriqueseor.pikaberry.ui.components.GameCanvas
 import dev.enriqueseor.pikaberry.core.GameEventListener
@@ -19,7 +20,9 @@ class GameActivity : AppCompatActivity(), GameEventListener {
     private var numLives = 3
     private var isGameFinished = false
 
-    private lateinit var game: GameCanvas
+    private lateinit var gameCanvas: GameCanvas
+    private lateinit var gameEngine: GameEngine
+
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var playerName: String
     private lateinit var soundPool: SoundPool
@@ -34,13 +37,13 @@ class GameActivity : AppCompatActivity(), GameEventListener {
         levelNumber = intent.getIntExtra("levelNumber", 2)
         playerName = intent.getStringExtra("playerName") ?: "Unknown"
 
-        game = findViewById(R.id.Screen)
-        game.setGameEventListener(this)
-        game.setDifficultyLevel(levelNumber)
+        gameCanvas = findViewById(R.id.Screen)
+        gameEngine = GameEngine(this, this)
+        gameEngine.level = levelNumber
+        gameCanvas.engine = gameEngine
 
         initializeSoundPool()
         playList()
-        observer()
         gameTimer()
     }
 
@@ -65,10 +68,8 @@ class GameActivity : AppCompatActivity(), GameEventListener {
 
     override fun onRockCollision() {
         playSound(R.raw.geodude)
-        if (numLives == 1) {
+        if (gameEngine.lives <= 0) {
             onGameFinished()
-        } else {
-            numLives -= 1
         }
     }
 
@@ -102,12 +103,12 @@ class GameActivity : AppCompatActivity(), GameEventListener {
     private fun onGameFinished() {
         if (isGameFinished) return
         isGameFinished = true
-        game.setGameEventListener(null)
         Intent(this, ResultsActivity::class.java).apply {
             putExtra("levelNumber", levelNumber)
             putExtra("levelName", intent.getStringExtra("levelName") ?: "MEDIUM")
             putExtra("playerName", playerName)
-            putExtra("playerScore", score)
+            // Usamos el score real que tiene el motor
+            putExtra("playerScore", gameEngine.score)
             startActivity(this)
         }
         finish()
@@ -154,15 +155,10 @@ class GameActivity : AppCompatActivity(), GameEventListener {
         }
     }
 
-    private fun observer() {
-        val observer = game.viewTreeObserver
-        observer.addOnGlobalLayoutListener {}
-    }
-
     private fun gameTimer() {
         handler.post(object : Runnable {
             override fun run() {
-                game.invalidate()
+                gameCanvas.invalidate()
                 handler.postDelayed(this, 16)
             }
         })
