@@ -2,6 +2,8 @@ package dev.enriqueseor.pikaberry.core
 
 import android.content.Context
 import android.graphics.RectF
+import android.os.Handler
+import android.os.Looper
 import dev.enriqueseor.pikaberry.data.model.*
 
 class GameEngine(private val context: Context, private val listener: GameEventListener?) {
@@ -11,6 +13,17 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
     var level = 2
     private val baseSpeed = 10
     private var lastSpawnTime = 0L
+    private val handler = Handler(Looper.getMainLooper())
+    private var isRunning = false
+    private val gameRunnable = object : Runnable {
+        override fun run() {
+            if (isRunning) {
+                update()
+                listener?.onTick()
+                handler.postDelayed(this, 16)
+            }
+        }
+    }
 
     lateinit var pikachu: Pikachu
     val berries = mutableListOf<Berry>()
@@ -20,11 +33,23 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
     private var canvasWidth = 0
     private var canvasHeight = 0
 
+    fun start() {
+        isRunning = true
+        handler.post(gameRunnable)
+    }
+
+    fun stop() {
+        isRunning = false
+        handler.removeCallbacks(gameRunnable)
+    }
+
+    fun isGameOver() = lives <= 0
+
     fun initGame(width: Int, height: Int) {
         canvasWidth = width
         canvasHeight = height
         pikachu = Pikachu(width / 2, height - 100, 100, context)
-        heart = Heart((0..width).random(), (-20000..-15000).random() * level, context)
+        heart = Heart((0..width).random(), (-17500..-12500).random() * level, context)
         berries.clear()
         rocks.clear()
     }
@@ -34,7 +59,7 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
 
         // UPDATE HEART
         heart.updatePosition(canvasWidth, canvasHeight, baseSpeed, level)
-        checkHeartCollision()
+        onHeartCollected()
 
         // UPDATE BERRIES
         val berryIterator = berries.iterator()
@@ -52,9 +77,6 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
             val rock = rockIterator.next()
             rock.updatePosition(canvasWidth, canvasHeight, baseSpeed, level)
             if (checkRockCollision(rock) || rock.y > canvasHeight + 100) {
-                if (rock.y > canvasHeight) {
-                    android.util.Log.d("GameDebug", "ROCA ELIMINADA POR SALIR DE PANTALLA")
-                }
                 rockIterator.remove()
             }
         }
@@ -107,7 +129,7 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
         return false
     }
 
-    private fun checkHeartCollision() {
+    private fun onHeartCollected() {
         if (RectF.intersects(pikachu.rect, heart.rect)) {
             heart.x = (0..canvasWidth).random()
             heart.y = (-17500..-12500).random() * level

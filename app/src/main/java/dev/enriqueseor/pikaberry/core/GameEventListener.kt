@@ -5,4 +5,5 @@ interface GameEventListener {
     fun onRockCollision()
     fun onHeartCollected()
     fun onScoreUpdated(newScore: Int)
+    fun onTick()
 }
