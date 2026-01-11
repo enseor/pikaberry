@@ -133,6 +133,7 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
         if (heart.y > canvasHeight) {
             heart.x = (0..canvasWidth).random()
             heart.y = (-17500..-12500).random()
+            return
         }
         if (RectF.intersects(pikachu.rect, heart.rect)) {
             heart.x = (0..canvasWidth).random()
