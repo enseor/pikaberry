@@ -6,7 +6,6 @@ import dev.enriqueseor.pikaberry.data.model.*
 
 class GameEngine(private val context: Context, private val listener: GameEventListener?) {
 
-    // Estado del juego
     var score = 0
     var lives = 3
     var level = 2
@@ -14,7 +13,6 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
     private val spawnInterval = 900L
     private var lastSpawnTime = 0L
 
-    // Entidades
     lateinit var pikachu: Pikachu
     val berries = mutableListOf<Berry>()
     val rocks = mutableListOf<Rock>()
@@ -65,7 +63,13 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
         if (currentTime - lastSpawnTime > spawnInterval) {
             lastSpawnTime = currentTime
             if ((0..100).random() < 70) {
-                if (berries.size < 6) berries.add(Berry((0..canvasWidth).random(), 0, context.resources))
+                if (berries.size < 6) berries.add(
+                    Berry(
+                        (0..canvasWidth).random(),
+                        0,
+                        context.resources
+                    )
+                )
             } else {
                 if (rocks.size < 6) rocks.add(Rock((0..canvasWidth).random(), 0, context))
             }

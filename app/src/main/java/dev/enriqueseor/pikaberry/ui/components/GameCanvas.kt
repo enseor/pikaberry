@@ -34,10 +34,8 @@ class GameCanvas(context: Context, attrs: AttributeSet?) : View(context, attrs) 
         super.onDraw(canvas)
         val game = engine ?: return
 
-        // 1. Lógica: Le pedimos al motor que actualice posiciones
         game.update()
 
-        // 2. Dibujo: El motor nos da las entidades y nosotros las pintamos
         game.pikachu.setBounds()
         game.pikachu.draw(canvas)
 
@@ -45,11 +43,9 @@ class GameCanvas(context: Context, attrs: AttributeSet?) : View(context, attrs) 
         game.rocks.forEach { it.draw(canvas, 100) }
         game.heart.draw(canvas, 100)
 
-        // 3. UI
         scoreboard?.updateScore(game.score, game.lives)
         scoreboard?.draw(canvas)
 
-        // 4. Bucle: Forzamos el siguiente frame
         invalidate()
     }
 }
