@@ -1,4 +1,4 @@
-package dev.enriqueseor.pikaberry.view.adapter
+package dev.enriqueseor.pikaberry.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.View

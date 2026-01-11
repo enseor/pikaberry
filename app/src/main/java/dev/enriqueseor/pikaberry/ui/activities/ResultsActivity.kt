@@ -1,4 +1,4 @@
-package dev.enriqueseor.pikaberry.view.activity
+package dev.enriqueseor.pikaberry.ui.activities
 
 import android.content.ContentValues
 import android.os.Bundle
@@ -7,8 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dev.enriqueseor.pikaberry.R
-import dev.enriqueseor.pikaberry.database.PlayerDatabaseHelper
-import dev.enriqueseor.pikaberry.view.adapter.ScoreAdapter
+import dev.enriqueseor.pikaberry.data.database.PlayerDatabaseHelper
+import dev.enriqueseor.pikaberry.ui.adapters.ScoreAdapter
 
 class ResultsActivity : AppCompatActivity() {
     private var playerName: String? = null

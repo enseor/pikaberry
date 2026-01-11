@@ -1,4 +1,4 @@
-package dev.enriqueseor.pikaberry.view.activity
+package dev.enriqueseor.pikaberry.ui.activities
 
 import android.content.Intent
 import android.content.res.Configuration
@@ -9,9 +9,9 @@ import android.os.Looper
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import dev.enriqueseor.pikaberry.R
-import dev.enriqueseor.pikaberry.media.PlaylistManager
-import dev.enriqueseor.pikaberry.view.GameCanvas
-import dev.enriqueseor.pikaberry.view.util.GameEventListener
+import dev.enriqueseor.pikaberry.utils.PlaylistManager
+import dev.enriqueseor.pikaberry.ui.components.GameCanvas
+import dev.enriqueseor.pikaberry.core.GameEventListener
 
 class GameActivity : AppCompatActivity(), GameEventListener {
     private var levelNumber = 2

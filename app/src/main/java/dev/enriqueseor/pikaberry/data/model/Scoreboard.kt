@@ -1,4 +1,4 @@
-package dev.enriqueseor.pikaberry.model
+package dev.enriqueseor.pikaberry.data.model
 
 import android.content.Context
 import android.graphics.Canvas

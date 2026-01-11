@@ -1,4 +1,4 @@
-package dev.enriqueseor.pikaberry.view.activity
+package dev.enriqueseor.pikaberry.ui.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

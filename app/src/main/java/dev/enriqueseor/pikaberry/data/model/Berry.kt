@@ -1,5 +1,6 @@
-package dev.enriqueseor.pikaberry.model
+package dev.enriqueseor.pikaberry.data.model
 
+import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
@@ -7,7 +8,7 @@ import androidx.core.content.res.ResourcesCompat
 import dev.enriqueseor.pikaberry.R
 import java.util.Random
 
-class Berry(var x: Int, var y: Int, private val resources: android.content.res.Resources) {
+class Berry(var x: Int, var y: Int, private val resources: Resources) {
     val rect = RectF()
     private var drawable: Drawable? = null
     var type: Int = customRandomBerryType()

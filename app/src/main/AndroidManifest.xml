@@ -11,19 +11,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Berry">
         <activity
-            android:name=".view.activity.InfoActivity"
+            android:name=".ui.activities.InfoActivity"
             android:exported="false" />
         <activity
-            android:name=".view.activity.RankingActivity"
+            android:name=".ui.activities.RankingActivity"
             android:exported="false" />
         <activity
-            android:name=".view.activity.ResultsActivity"
+            android:name=".ui.activities.ResultsActivity"
             android:exported="true" />
         <activity
-            android:name=".view.activity.GameActivity"
+            android:name=".ui.activities.GameActivity"
             android:exported="true" />
         <activity
-            android:name=".view.activity.MainActivity"
+            android:name=".ui.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

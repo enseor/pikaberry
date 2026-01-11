@@ -1,4 +1,4 @@
-package dev.enriqueseor.pikaberry.view
+package dev.enriqueseor.pikaberry.ui.components
 
 import android.content.Context
 import android.graphics.Canvas
@@ -6,12 +6,12 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import dev.enriqueseor.pikaberry.model.Berry
-import dev.enriqueseor.pikaberry.model.Heart
-import dev.enriqueseor.pikaberry.model.Pikachu
-import dev.enriqueseor.pikaberry.model.Rock
-import dev.enriqueseor.pikaberry.model.Scoreboard
-import dev.enriqueseor.pikaberry.view.util.GameEventListener
+import dev.enriqueseor.pikaberry.core.GameEventListener
+import dev.enriqueseor.pikaberry.data.model.Berry
+import dev.enriqueseor.pikaberry.data.model.Heart
+import dev.enriqueseor.pikaberry.data.model.Pikachu
+import dev.enriqueseor.pikaberry.data.model.Rock
+import dev.enriqueseor.pikaberry.data.model.Scoreboard
 
 class GameCanvas(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
     private var canvasWidth: Int = 0

@@ -1,4 +1,4 @@
-package dev.enriqueseor.pikaberry.view.activity
+package dev.enriqueseor.pikaberry.ui.activities
 
 import android.content.Intent
 import android.os.Bundle

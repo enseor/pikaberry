@@ -1,10 +1,10 @@
-package dev.enriqueseor.pikaberry.media
+package dev.enriqueseor.pikaberry.utils
 
 import android.content.Context
 import android.media.MediaPlayer
-import android.media.MediaPlayer.OnCompletionListener
 
-class PlaylistManager(context: Context, songResources: IntArray) : OnCompletionListener {
+class PlaylistManager(context: Context, songResources: IntArray) :
+    MediaPlayer.OnCompletionListener {
     private lateinit var playlist: Array<MediaPlayer?>
     private var currentSongIndex = 0
     private var onSongChangeListener: ((Int) -> Unit)? = null
