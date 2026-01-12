@@ -3,23 +3,23 @@ package dev.enriqueseor.pikaberry.data.model
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.RectF
-import android.graphics.drawable.Drawable
 import androidx.core.content.res.ResourcesCompat
 import dev.enriqueseor.pikaberry.R
 
-class Pikachu(private var x: Int, private var y: Int, private val radius: Int, context: Context) {
+class Pikachu(var x: Int, var y: Int, val radius: Int, context: Context) {
     val rect = RectF()
-    private var pikachuDrawable: Drawable? = null
+    private val drawable = ResourcesCompat.getDrawable(context.resources, R.drawable.pikachu, null)
 
     init {
-        pikachuDrawable = ResourcesCompat.getDrawable(context.resources, R.drawable.pikachu, null)
+        updateRect()
     }
 
     fun updatePosition(newX: Int, canvasWidth: Int) {
         x = newX.coerceIn(radius, canvasWidth - radius)
+        updateRect()
     }
 
-    fun setBounds() {
+    private fun updateRect() {
         rect.set(
             (x - radius).toFloat(),
             (y - radius).toFloat(),
@@ -29,12 +29,14 @@ class Pikachu(private var x: Int, private var y: Int, private val radius: Int, c
     }
 
     fun draw(canvas: Canvas) {
-        pikachuDrawable?.setBounds(
-            (x - radius),
-            (y - radius),
-            (x + radius),
-            (y + radius)
-        )
-        pikachuDrawable?.draw(canvas)
+        drawable?.let {
+            it.setBounds(
+                rect.left.toInt(),
+                rect.top.toInt(),
+                rect.right.toInt(),
+                rect.bottom.toInt()
+            )
+            it.draw(canvas)
+        }
     }
 }

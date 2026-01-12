@@ -6,50 +6,25 @@ import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import androidx.core.content.res.ResourcesCompat
 import dev.enriqueseor.pikaberry.R
-import java.util.Random
 
-class Berry(var x: Int, var y: Int, private val resources: Resources) {
+class Berry(var x: Int, var y: Int, val type: Int, private val resources: Resources) {
     val rect = RectF()
     private var drawable: Drawable? = null
-    var type: Int = customRandomBerryType()
+    private val radius = 100
 
     init {
-        setDrawable()
-    }
-
-    fun customRandomBerryType(): Int {
-        val probabilities = doubleArrayOf(0.60, 0.20, 0.10, 0.050, 0.025)
-        val rand = Random().nextDouble()
-        var cumulativeProbability = 0.0
-        for (i in probabilities.indices) {
-            cumulativeProbability += probabilities[i]
-            if (rand <= cumulativeProbability) {
-                return i
-            }
-        }
-        return 0
-    }
-
-    fun setDrawable() {
         val berriesDrawable = arrayOf(
-            ResourcesCompat.getDrawable(resources, R.drawable.razz_berry, null),
-            ResourcesCompat.getDrawable(resources, R.drawable.pinap_berry, null),
-            ResourcesCompat.getDrawable(resources, R.drawable.nanap_berry, null),
-            ResourcesCompat.getDrawable(resources, R.drawable.pinap_berry_silver, null),
-            ResourcesCompat.getDrawable(resources, R.drawable.razz_berry_golden, null)
+            R.drawable.razz_berry,
+            R.drawable.pinap_berry,
+            R.drawable.nanap_berry,
+            R.drawable.pinap_berry_silver,
+            R.drawable.razz_berry_golden
         )
-        drawable = berriesDrawable[type]
+        drawable = ResourcesCompat.getDrawable(resources, berriesDrawable[type], null)
+        updateRect()
     }
 
-    fun draw(canvas: Canvas, radius: Int) {
-        drawable?.setBounds(
-            x - radius,
-            y - radius,
-            x + radius,
-            y + radius
-        )
-        drawable?.draw(canvas)
-
+    private fun updateRect() {
         rect.set(
             (x - radius).toFloat(),
             (y - radius).toFloat(),
@@ -58,7 +33,21 @@ class Berry(var x: Int, var y: Int, private val resources: Resources) {
         )
     }
 
-    fun updatePosition(canvasWidth: Int, canvasHeight: Int, baseSpeed: Int, level: Int) {
-        y += baseSpeed * level
+    fun setPosition(newX: Int, newY: Int) {
+        x = newX
+        y = newY
+        updateRect()
+    }
+
+    fun draw(canvas: Canvas) {
+        drawable?.let {
+            it.setBounds(
+                rect.left.toInt(),
+                rect.top.toInt(),
+                rect.right.toInt(),
+                rect.bottom.toInt()
+            )
+            it.draw(canvas)
+        }
     }
 }

@@ -9,21 +9,21 @@ import dev.enriqueseor.pikaberry.R
 
 class Heart(var x: Int, var y: Int, context: Context) {
     val rect = RectF()
-    var drawable: Drawable? = null
+    private val drawable: Drawable? =
+        ResourcesCompat.getDrawable(context.resources, R.drawable.heart, null)
+    private val radius = 100
 
     init {
-        drawable = ResourcesCompat.getDrawable(context.resources, R.drawable.heart, null)
+        updateRect()
     }
 
-    fun draw(canvas: Canvas, radius: Int) {
-        drawable?.setBounds(
-            x - radius,
-            y - radius,
-            x + radius,
-            y + radius
-        )
-        drawable?.draw(canvas)
+    fun setPosition(newX: Int, newY: Int) {
+        x = newX
+        y = newY
+        updateRect()
+    }
 
+    private fun updateRect() {
         rect.set(
             (x - radius).toFloat(),
             (y - radius).toFloat(),
@@ -32,7 +32,15 @@ class Heart(var x: Int, var y: Int, context: Context) {
         )
     }
 
-    fun updatePosition(canvasWidth: Int, canvasHeight: Int, baseSpeed: Int, level: Int) {
-        y += baseSpeed * level
+    fun draw(canvas: Canvas) {
+        drawable?.let {
+            it.setBounds(
+                rect.left.toInt(),
+                rect.top.toInt(),
+                rect.right.toInt(),
+                rect.bottom.toInt()
+            )
+            it.draw(canvas)
+        }
     }
 }
