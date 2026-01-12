@@ -20,13 +20,10 @@ class GameCanvas(context: Context, attrs: AttributeSet?) : View(context, attrs) 
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        when (event.action) {
-            MotionEvent.ACTION_MOVE, MotionEvent.ACTION_UP -> {
-                engine?.movePikachu(event.x)
-                invalidate()
-                if (event.action == MotionEvent.ACTION_UP) performClick()
-            }
+        if (event.action == MotionEvent.ACTION_MOVE || event.action == MotionEvent.ACTION_DOWN) {
+            engine?.movePikachu(event.x)
         }
+        if (event.action == MotionEvent.ACTION_UP) performClick()
         return true
     }
 
@@ -34,18 +31,17 @@ class GameCanvas(context: Context, attrs: AttributeSet?) : View(context, attrs) 
         super.onDraw(canvas)
         val game = engine ?: return
 
-        game.update()
-
-        game.pikachu.setBounds()
         game.pikachu.draw(canvas)
 
-        game.berries.forEach { it.draw(canvas, 100) }
-        game.rocks.forEach { it.draw(canvas, 100) }
-        game.heart.draw(canvas, 100)
+        game.berries.forEach { it.draw(canvas) }
+        game.rocks.forEach { it.draw(canvas) }
+        game.heart.draw(canvas)
 
         scoreboard?.updateScore(game.score, game.lives)
         scoreboard?.draw(canvas)
+    }
 
+    fun updateView() {
         invalidate()
     }
 }

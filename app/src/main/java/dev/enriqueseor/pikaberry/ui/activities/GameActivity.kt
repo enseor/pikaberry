@@ -39,10 +39,10 @@ class GameActivity : AppCompatActivity(), GameEventListener {
     }
 
     override fun onTick() {
-        gameCanvas.invalidate()
+        gameCanvas.updateView()
     }
 
-    override fun onBerryCollected() {
+    override fun onBerryCollision() {
         soundManager.playBerrySound()
     }
 
@@ -51,7 +51,7 @@ class GameActivity : AppCompatActivity(), GameEventListener {
         if (gameEngine.isGameOver()) onGameFinished()
     }
 
-    override fun onHeartCollected() {
+    override fun onHeartCollision() {
         soundManager.playHeartSound()
     }
 
