@@ -35,7 +35,7 @@ class GameCanvas(context: Context, attrs: AttributeSet?) : View(context, attrs) 
 
         game.berries.forEach { it.draw(canvas) }
         game.rocks.forEach { it.draw(canvas) }
-        game.heart.draw(canvas)
+        game.hearts.forEach { it.draw(canvas) }
 
         scoreboard?.updateScore(game.score, game.lives)
         scoreboard?.draw(canvas)

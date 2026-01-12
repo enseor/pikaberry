@@ -29,7 +29,6 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
     val berries = mutableListOf<Berry>()
     val rocks = mutableListOf<Rock>()
     val hearts = mutableListOf<Heart>()
-    lateinit var heart: Heart
 
     private var canvasWidth = 0
     private var canvasHeight = 0
@@ -50,9 +49,9 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
         canvasWidth = width
         canvasHeight = height
         pikachu = Pikachu(width / 2, height - 100, 100, context)
-        heart = Heart((0..width).random(), (-17500..-12500).random(), context)
         berries.clear()
         rocks.clear()
+        hearts.clear()
     }
 
     fun update() {
@@ -60,8 +59,14 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
         val currentSpeed = baseSpeed * level
 
         // UPDATE HEART
-        heart.setPosition(heart.x, heart.y + currentSpeed)
-        checkHeartCollision()
+        val heartIterator = hearts.iterator()
+        while (heartIterator.hasNext()) {
+            val heart = heartIterator.next()
+            heart.setPosition(heart.x, heart.y + currentSpeed)
+            if (checkHeartCollision(heart) || heart.y > canvasHeight + 100) {
+                heartIterator.remove()
+            }
+        }
 
         // UPDATE BERRIES
         val berryIterator = berries.iterator()
@@ -103,12 +108,12 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
             val chance = (1..100).random()
             when {
                 chance <= 1 -> {
-                    heart.setPosition((0..canvasWidth).random(), -100)
+                    hearts.add(Heart((0..canvasWidth).random(), -100, context))
                 }
                 chance <= 50 -> {
                     if (berries.size < 6) {
-                        val berryType = getRandomBerryType()
-                        berries.add(Berry((0..canvasWidth).random(), -100, berryType, context.resources))
+                        val type = getRandomBerryType()
+                        berries.add(Berry((0..canvasWidth).random(), -100, type, context.resources))
                     }
                 }
                 else -> {
@@ -123,9 +128,9 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
     private fun getSpawnInterval(): Long {
         return when (level) {
             1 -> 500L
-            2 -> 800L
-            3 -> 1200L
-            else -> 800L
+            2 -> 500L
+            3 -> 500L
+            else -> 500L
         }
     }
 
@@ -149,18 +154,15 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
         return false
     }
 
-    private fun checkHeartCollision() {
-        if (heart.y > canvasHeight) {
-            heart.x = (0..canvasWidth).random()
-            heart.y = (-17500..-12500).random()
-            return
-        }
+    private fun checkHeartCollision(heart: Heart): Boolean {
         if (RectF.intersects(pikachu.rect, heart.rect)) {
-            heart.x = (0..canvasWidth).random()
-            heart.y = (-17500..-12500).random()
-            if (lives < 3) lives++
+            if (lives < 3) {
+                lives++
+            }
             listener?.onHeartCollision()
+            return true
         }
+        return false
     }
 
     fun movePikachu(x: Float) {
