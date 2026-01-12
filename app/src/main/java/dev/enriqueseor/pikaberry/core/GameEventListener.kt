@@ -1,9 +1,9 @@
 package dev.enriqueseor.pikaberry.core
 
 interface GameEventListener {
-    fun onBerryCollected()
+    fun onBerryCollision()
     fun onRockCollision()
-    fun onHeartCollected()
+    fun onHeartCollision()
     fun onScoreUpdated(newScore: Int)
     fun onTick()
 }
