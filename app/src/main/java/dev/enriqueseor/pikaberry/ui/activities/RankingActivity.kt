@@ -17,47 +17,15 @@ class RankingActivity : AppCompatActivity() {
 
         dbHelper = PlayerDatabaseHelper(this)
 
-        val easyRecyclerView: RecyclerView = findViewById(R.id.easyRecyclerView)
-        val mediumRecyclerView: RecyclerView = findViewById(R.id.mediumRecyclerView)
-        val hardRecyclerView: RecyclerView = findViewById(R.id.hardRecyclerView)
-
-        easyRecyclerView.layoutManager = LinearLayoutManager(this)
-        mediumRecyclerView.layoutManager = LinearLayoutManager(this)
-        hardRecyclerView.layoutManager = LinearLayoutManager(this)
-
-        val easyScores = getScoresByLevel("EASY")
-        val mediumScores = getScoresByLevel("MEDIUM")
-        val hardScores = getScoresByLevel("HARD")
-
-        easyRecyclerView.adapter = ScoreAdapter(easyScores)
-        mediumRecyclerView.adapter = ScoreAdapter(mediumScores)
-        hardRecyclerView.adapter = ScoreAdapter(hardScores)
+        setupRecyclerView(R.id.easyRecyclerView, "EASY")
+        setupRecyclerView(R.id.mediumRecyclerView, "MEDIUM")
+        setupRecyclerView(R.id.hardRecyclerView, "HARD")
     }
 
-    private fun getScoresByLevel(level: String): List<Pair<String, Int>> {
-        val db = dbHelper.readableDatabase
-        val scores = mutableListOf<Pair<String, Int>>()
-
-        val cursor = db.query(
-            PlayerDatabaseHelper.TABLE_NAME,
-            arrayOf(PlayerDatabaseHelper.COLUMN_NAME, PlayerDatabaseHelper.COLUMN_SCORE),
-            "${PlayerDatabaseHelper.COLUMN_LEVEL} = ?",
-            arrayOf(level),
-            null, null,
-            "${PlayerDatabaseHelper.COLUMN_SCORE} DESC",
-            "10"
-        )
-
-        with(cursor) {
-            while (moveToNext()) {
-                val name = getString(getColumnIndexOrThrow(PlayerDatabaseHelper.COLUMN_NAME))
-                val score = getInt(getColumnIndexOrThrow(PlayerDatabaseHelper.COLUMN_SCORE))
-                scores.add(name to score)
-            }
-        }
-        cursor.close()
-        db.close()
-
-        return scores
+    private fun setupRecyclerView(resId: Int, level: String) {
+        val recyclerView: RecyclerView = findViewById(resId)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        val scores = dbHelper.getScoresByLevel(level)
+        recyclerView.adapter = ScoreAdapter(scores)
     }
 }

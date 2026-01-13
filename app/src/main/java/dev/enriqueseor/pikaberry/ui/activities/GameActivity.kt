@@ -12,13 +12,14 @@ import dev.enriqueseor.pikaberry.core.GameEventListener
 import dev.enriqueseor.pikaberry.utils.SoundManager
 
 class GameActivity : AppCompatActivity(), GameEventListener {
-    private var levelNumber = 2
+    private var levelNumber = 1
     private var isGameFinished = false
 
     private lateinit var gameCanvas: GameCanvas
     private lateinit var gameEngine: GameEngine
 
     private lateinit var playerName: String
+    private lateinit var levelName: String
     private lateinit var soundManager: SoundManager
     private var playlistManager: PlaylistManager? = null
 
@@ -26,8 +27,9 @@ class GameActivity : AppCompatActivity(), GameEventListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        levelNumber = intent.getIntExtra("levelNumber", 2)
-        playerName = intent.getStringExtra("playerName") ?: "Unknown"
+        levelNumber = intent.getIntExtra("levelNumber", 1)
+        playerName = intent.getStringExtra("playerName") ?: "PLAYER"
+        levelName = intent.getStringExtra("levelName") ?: "EASY"
 
         gameCanvas = findViewById(R.id.Screen)
         gameEngine = GameEngine(this, this)
@@ -82,6 +84,7 @@ class GameActivity : AppCompatActivity(), GameEventListener {
 
         Intent(this, ResultsActivity::class.java).apply {
             putExtra("playerScore", gameEngine.score)
+            putExtra("levelName", levelName)
             startActivity(this)
         }
         finish()

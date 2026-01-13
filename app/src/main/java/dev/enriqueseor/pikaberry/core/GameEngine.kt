@@ -10,7 +10,7 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
 
     var score = 0
     var lives = 3
-    var level = 2
+    var level = 1
     private val baseSpeed = 10
     private var lastSpawnTime = 0L
     private val handler = Handler(Looper.getMainLooper())
