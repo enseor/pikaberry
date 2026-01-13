@@ -34,4 +34,37 @@ class PlayerDatabaseHelper(context: Context) :
         db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
         onCreate(db)
     }
+
+    fun addScore(name: String, score: Int, level: String) {
+        val db = this.writableDatabase
+        val query = "INSERT INTO $TABLE_NAME ($COLUMN_NAME, $COLUMN_SCORE, $COLUMN_LEVEL) VALUES (?, ?, ?)"
+        db.execSQL(query, arrayOf(name, score, level))
+        db.close()
+    }
+
+    fun getScoresByLevel(level: String): List<Pair<String, Int>> {
+        val list = mutableListOf<Pair<String, Int>>()
+        val db = this.readableDatabase
+
+        val cursor = db.query(
+            TABLE_NAME,
+            arrayOf(COLUMN_NAME, COLUMN_SCORE),
+            "$COLUMN_LEVEL = ?",
+            arrayOf(level),
+            null, null,
+            "$COLUMN_SCORE DESC",
+            "10" // Top 10
+        )
+
+        if (cursor.moveToFirst()) {
+            do {
+                val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
+                val score = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SCORE))
+                list.add(name to score)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return list
+    }
 }
