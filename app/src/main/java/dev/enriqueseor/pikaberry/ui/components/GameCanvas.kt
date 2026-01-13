@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import dev.enriqueseor.pikaberry.core.GameEngine
-import dev.enriqueseor.pikaberry.data.model.Scoreboard
+import dev.enriqueseor.pikaberry.ui.components.Scoreboard
 
 class GameCanvas(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
@@ -16,7 +16,7 @@ class GameCanvas(context: Context, attrs: AttributeSet?) : View(context, attrs) 
     override fun onSizeChanged(w: Int, h: Int, oldW: Int, oldH: Int) {
         super.onSizeChanged(w, h, oldW, oldH)
         engine?.initGame(w, h)
-        scoreboard = Scoreboard(w, h, 0, 3, context)
+        scoreboard = Scoreboard(w, h, context)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
