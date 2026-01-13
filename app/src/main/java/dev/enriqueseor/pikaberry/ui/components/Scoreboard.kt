@@ -19,7 +19,7 @@ class Scoreboard(
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.BLACK
         textAlign = Paint.Align.LEFT
-        textSize = canvasHeight * 0.05f
+        textSize = canvasHeight * 0.06f
     }
 
     private val paintWhite = Paint().apply {
@@ -27,10 +27,8 @@ class Scoreboard(
         style = Paint.Style.FILL
     }
 
-    private val berryDrawable =
-        ResourcesCompat.getDrawable(context.resources, R.drawable.berry, null)
-    private val heartDrawable =
-        ResourcesCompat.getDrawable(context.resources, R.drawable.heart, null)
+    private val berryDrawable = ResourcesCompat.getDrawable(context.resources, R.drawable.berry, null)
+    private val heartDrawable = ResourcesCompat.getDrawable(context.resources, R.drawable.heart, null)
     private val bgRect = RectF(0f, 0f, canvasWidth.toFloat(), canvasHeight * 0.1f)
     private val iconSize = canvasHeight * 0.06f
     private val berryRect = RectF(
@@ -46,7 +44,9 @@ class Scoreboard(
     }
 
     fun draw(canvas: Canvas) {
+
         canvas.drawRect(bgRect, paintWhite)
+
         berryDrawable?.let {
             it.setBounds(
                 berryRect.left.toInt(),
@@ -56,22 +56,28 @@ class Scoreboard(
             )
             it.draw(canvas)
         }
+
         canvas.drawText(
             "$score",
             berryRect.right + 20f,
             berryRect.centerY() + (textPaint.textSize / 3),
             textPaint
         )
-        val heartSize = canvasHeight * 0.05f
+
+        val heartSize = canvasHeight * 0.06f
         val startX = canvasWidth - canvasWidth * 0.05f
+        val centerY = bgRect.centerY()
+
         for (i in 0 until lives) {
-            val right = startX - (i * (heartSize + 10f))
+            val right = startX - (i * (heartSize + 15f))
             val left = right - heartSize
+            val top = centerY - (heartSize / 2)
+            val bottom = centerY + (heartSize / 2)
             heartDrawable?.setBounds(
                 left.toInt(),
-                berryRect.top.toInt(),
+                top.toInt(),
                 right.toInt(),
-                berryRect.bottom.toInt()
+                bottom.toInt()
             )
             heartDrawable?.draw(canvas)
         }
