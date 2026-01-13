@@ -22,7 +22,7 @@
             android:shadowDx="2"
             android:shadowDy="2"
             android:shadowRadius="2"
-            android:text="@string/berry_game_info"
+            android:text="PikaBerry Info"
             android:textColor="#FFFFFF"
             android:textSize="32sp"
             android:textStyle="bold" />
@@ -171,12 +171,13 @@
                 android:src="@drawable/heart" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:text="EXTRA LIFE"
                 android:textColor="#81C784"
-                android:textSize="20sp"
+                android:textSize="40sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -188,7 +189,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <ImageView
@@ -197,24 +198,20 @@
                 android:src="@drawable/golem" />
 
             <View
-                android:layout_width="20dp"
-                android:layout_height="match_parent" />
+                android:layout_width="40dp"
+                android:layout_height="0dp" />
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-black"
-                android:text="-1"
-                android:textColor="#FF5252"
-                android:textSize="40sp"
-                android:textStyle="bold" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="8dp"
-                android:src="@drawable/heart" />
+                <ImageView
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:src="@drawable/heart_broken"/>
+            </LinearLayout>
         </LinearLayout>
-
     </LinearLayout>
 </ScrollView>

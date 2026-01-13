@@ -1,7 +1,3 @@
 <resources>
     <string name="app_name">PikaBerry</string>
-    <string name="berry_game">PIKABERRY</string>
-
-    <!-- Info Layout -->
-    <string name="berry_game_info">PikaBerry Info</string>
 </resources>
