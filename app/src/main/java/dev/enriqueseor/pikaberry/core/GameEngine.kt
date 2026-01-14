@@ -91,7 +91,7 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
     }
 
     private fun getRandomBerryType(): Int {
-        val probabilities = doubleArrayOf(0.60, 0.20, 0.10, 0.05, 0.05)
+        val probabilities = doubleArrayOf(0.45, 0.25, 0.15, 0.10, 0.5)
         val rand = Math.random()
         var cumulative = 0.0
         for (i in probabilities.indices) {
@@ -127,10 +127,10 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
 
     private fun getSpawnInterval(): Long {
         return when (level) {
-            1 -> 500L
-            2 -> 500L
-            3 -> 500L
-            else -> 500L
+            1 -> 600L
+            2 -> 400L
+            3 -> 200L
+            else -> 600L
         }
     }
 
