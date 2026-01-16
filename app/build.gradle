@@ -7,7 +7,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId "dev.enriqueseor.pikaberry"
+        applicationId "dev.enseor.pikaberry"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

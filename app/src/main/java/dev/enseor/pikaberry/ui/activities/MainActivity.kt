@@ -2,7 +2,6 @@ package dev.enseor.pikaberry.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioButton
@@ -10,67 +9,45 @@ import androidx.appcompat.app.AppCompatActivity
 import dev.enseor.pikaberry.R
 
 class MainActivity : AppCompatActivity() {
-    private var etName: EditText? = null
-    private var rbEasy: RadioButton? = null
-    private var rbHard: RadioButton? = null
+    private lateinit var etName: EditText
+    private lateinit var rbMedium: RadioButton
+    private lateinit var rbHard: RadioButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         etName = findViewById(R.id.etName)
-        rbEasy = findViewById(R.id.rbEasy)
+        rbMedium = findViewById(R.id.rbMedium)
         rbHard = findViewById(R.id.rbHard)
 
-        val btnInfo = findViewById<Button>(R.id.btnInfo)
-        btnInfo.setOnClickListener { _: View? -> info() }
-
-        val btnPlay = findViewById<Button>(R.id.btnPlay)
-        btnPlay.setOnClickListener { _: View? -> play() }
-
-        val btnRanking = findViewById<Button>(R.id.btnRanking)
-        btnRanking.setOnClickListener { _: View? -> ranking() }
+        findViewById<Button>(R.id.btnInfo).setOnClickListener { info() }
+        findViewById<Button>(R.id.btnPlay).setOnClickListener { play() }
+        findViewById<Button>(R.id.btnRanking).setOnClickListener { ranking() }
     }
 
     private fun info() {
-        val intent = Intent(this, InfoActivity::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, InfoActivity::class.java))
     }
 
-
     private fun play() {
-        val levelNumber: Int
-        val levelName: String
-
-        when {
-            rbEasy!!.isChecked -> {
-                levelNumber = 1
-                levelName = "EASY"
-            }
-            rbHard!!.isChecked -> {
-                levelNumber = 3
-                levelName = "HARD"
-            }
-            else -> {
-                levelNumber = 2
-                levelName = "MEDIUM"
-            }
+        val (levelNumber, levelName) = when {
+            rbMedium.isChecked -> 2 to "MEDIUM"
+            rbHard.isChecked -> 3 to "HARD"
+            else -> 1 to "EASY"
         }
 
-        var playerName = etName!!.text.toString()
-        if (playerName.isEmpty()) {
-            playerName = "PLAYER"
-        }
+        val playerName = etName.text.toString().ifEmpty { "PLAYER" }
 
-        val intent = Intent(this, GameActivity::class.java)
-        intent.putExtra("levelNumber", levelNumber)
-        intent.putExtra("levelName", levelName)
-        intent.putExtra("playerName", playerName)
+        val intent = Intent(this, GameActivity::class.java).apply {
+            putExtra("levelNumber", levelNumber)
+            putExtra("levelName", levelName)
+            putExtra("playerName", playerName)
+        }
         startActivity(intent)
     }
 
     private fun ranking() {
-        val intent = Intent(this, RankingActivity::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, RankingActivity::class.java))
     }
 }
