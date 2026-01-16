@@ -45,7 +45,6 @@ class ResultsActivity : AppCompatActivity() {
     private fun setupRecyclerView(levelName: String) {
         val scoreRecyclerView: RecyclerView = findViewById(R.id.scoreRecyclerView)
         scoreRecyclerView.layoutManager = LinearLayoutManager(this)
-
         val scores = dbHelper.getScoresByLevel(levelName)
         scoreRecyclerView.adapter = ScoreAdapter(scores)
     }
