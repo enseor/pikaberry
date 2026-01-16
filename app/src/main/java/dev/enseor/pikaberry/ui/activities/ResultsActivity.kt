@@ -10,9 +10,6 @@ import dev.enseor.pikaberry.data.database.PlayerDatabaseHelper
 import dev.enseor.pikaberry.ui.adapters.ScoreAdapter
 
 class ResultsActivity : AppCompatActivity() {
-    private var playerName: String? = null
-    private var playerScore = 0
-    private lateinit var resultTextView: TextView
     private lateinit var dbHelper: PlayerDatabaseHelper
     private var isScoreSaved = false
 
@@ -22,31 +19,44 @@ class ResultsActivity : AppCompatActivity() {
 
         dbHelper = PlayerDatabaseHelper(this)
 
-        resultTextView = findViewById(R.id.resultTextView)
-        val scoreRecyclerView: RecyclerView = findViewById(R.id.scoreRecyclerView)
-
-        scoreRecyclerView.layoutManager = LinearLayoutManager(this)
+        isScoreSaved = savedInstanceState?.getBoolean("isScoreSaved", false) ?: false
 
         val levelName = intent.getStringExtra("levelName") ?: "EASY"
-        playerName = intent.getStringExtra("playerName") ?: "PLAYER"
-        playerScore = intent.getIntExtra("playerScore", 0)
+        val playerName = intent.getStringExtra("playerName") ?: "PLAYER"
+        val playerScore = intent.getIntExtra("playerScore", 0)
 
-        if (savedInstanceState != null) {
-            isScoreSaved = savedInstanceState.getBoolean("isScoreSaved", false)
+        setupTextView(playerName, playerScore, levelName)
+        setupRecyclerView(levelName)
+
+        if (!isScoreSaved) {
+            saveScore(playerName, playerScore, levelName)
         }
+    }
 
-        yourScore(levelName)
+    private fun setupTextView(name: String, score: Int, level: String) {
+        val resultTextView: TextView = findViewById(R.id.resultTextView)
+        resultTextView.text = """
+            PLAYER: $name
+            SCORE: $score
+            LEVEL: $level
+        """.trimIndent()
+    }
+
+    private fun setupRecyclerView(levelName: String) {
+        val scoreRecyclerView: RecyclerView = findViewById(R.id.scoreRecyclerView)
+        scoreRecyclerView.layoutManager = LinearLayoutManager(this)
 
         val scores = dbHelper.getScoresByLevel(levelName)
         scoreRecyclerView.adapter = ScoreAdapter(scores)
     }
 
-    private fun yourScore(levelName: String) {
-        val resultText = "PLAYER: $playerName\nSCORE: $playerScore\nLEVEL: $levelName"
-        resultTextView.text = resultText
-        if (!isScoreSaved) {
-            dbHelper.addScore(playerName!!, playerScore, levelName)
-            isScoreSaved = true
-        }
+    private fun saveScore(name: String, score: Int, level: String) {
+        dbHelper.addScore(name, score, level)
+        isScoreSaved = true
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean("isScoreSaved", isScoreSaved)
     }
 }
