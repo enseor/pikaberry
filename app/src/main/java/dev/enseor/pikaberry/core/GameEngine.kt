@@ -48,7 +48,10 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
     fun initGame(width: Int, height: Int) {
         canvasWidth = width
         canvasHeight = height
-        pikachu = Pikachu(width / 2, height - 100, 100, context)
+        val pikaSize = (width * 0.20f).toInt()
+        val startX = (width / 2) - (pikaSize / 2)
+        val startY = height - pikaSize - 50
+        pikachu = Pikachu(startX, startY, pikaSize, context)
         berries.clear()
         rocks.clear()
         hearts.clear()
@@ -105,22 +108,16 @@ class GameEngine(private val context: Context, private val listener: GameEventLi
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastSpawnTime > getSpawnInterval()) {
             lastSpawnTime = currentTime
+
+            val spriteSize = (canvasWidth * 0.20f).toInt()
+            val randomX = (0..(canvasWidth - spriteSize)).random()
+            val type = getRandomBerryType()
             val chance = (1..100).random()
+
             when {
-                chance <= 1 -> {
-                    hearts.add(Heart((0..canvasWidth).random(), -100, context))
-                }
-                chance <= 50 -> {
-                    if (berries.size < 6) {
-                        val type = getRandomBerryType()
-                        berries.add(Berry((0..canvasWidth).random(), -100, type, context.resources))
-                    }
-                }
-                else -> {
-                    if (rocks.size < 6) {
-                        rocks.add(Rock((0..canvasWidth).random(), -100, context))
-                    }
-                }
+                chance <= 1 -> hearts.add(Heart(randomX, -spriteSize, spriteSize, context))
+                chance <= 50 -> berries.add(Berry(randomX, -spriteSize, type, spriteSize, context.resources))
+                else -> rocks.add(Rock(randomX, -spriteSize, spriteSize, context))
             }
         }
     }

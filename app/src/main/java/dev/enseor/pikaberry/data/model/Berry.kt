@@ -7,10 +7,9 @@ import android.graphics.drawable.Drawable
 import androidx.core.content.res.ResourcesCompat
 import dev.enseor.pikaberry.R
 
-class Berry(var x: Int, var y: Int, val type: Int, private val resources: Resources) {
+class Berry(var x: Int, var y: Int, val type: Int, val size: Int, private val resources: Resources) {
     val rect = RectF()
     private var drawable: Drawable? = null
-    private val radius = 100
 
     init {
         val berriesDrawable = arrayOf(
@@ -26,10 +25,10 @@ class Berry(var x: Int, var y: Int, val type: Int, private val resources: Resour
 
     private fun updateRect() {
         rect.set(
-            (x - radius).toFloat(),
-            (y - radius).toFloat(),
-            (x + radius).toFloat(),
-            (y + radius).toFloat()
+            x.toFloat(),
+            y.toFloat(),
+            (x + size).toFloat(),
+            (y + size).toFloat()
         )
     }
 
@@ -41,12 +40,7 @@ class Berry(var x: Int, var y: Int, val type: Int, private val resources: Resour
 
     fun draw(canvas: Canvas) {
         drawable?.let {
-            it.setBounds(
-                rect.left.toInt(),
-                rect.top.toInt(),
-                rect.right.toInt(),
-                rect.bottom.toInt()
-            )
+            it.setBounds(rect.left.toInt(), rect.top.toInt(), rect.right.toInt(), rect.bottom.toInt())
             it.draw(canvas)
         }
     }

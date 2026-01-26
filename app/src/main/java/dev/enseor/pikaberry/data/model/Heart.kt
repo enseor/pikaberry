@@ -7,11 +7,10 @@ import androidx.core.content.res.ResourcesCompat
 import android.content.Context
 import dev.enseor.pikaberry.R
 
-class Heart(var x: Int, var y: Int, context: Context) {
+class Heart(var x: Int, var y: Int, val size: Int, context: Context) {
     val rect = RectF()
     private val drawable: Drawable? =
         ResourcesCompat.getDrawable(context.resources, R.drawable.heart, null)
-    private val radius = 100
 
     init {
         updateRect()
@@ -25,10 +24,10 @@ class Heart(var x: Int, var y: Int, context: Context) {
 
     private fun updateRect() {
         rect.set(
-            (x - radius).toFloat(),
-            (y - radius).toFloat(),
-            (x + radius).toFloat(),
-            (y + radius).toFloat()
+            x.toFloat(),
+            y.toFloat(),
+            (x + size).toFloat(),
+            (y + size).toFloat()
         )
     }
 

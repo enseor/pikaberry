@@ -6,7 +6,7 @@ import android.graphics.RectF
 import androidx.core.content.res.ResourcesCompat
 import dev.enseor.pikaberry.R
 
-class Pikachu(var x: Int, var y: Int, val radius: Int, context: Context) {
+class Pikachu(var x: Int, var y: Int, val size: Int, context: Context) {
     val rect = RectF()
     private val drawable = ResourcesCompat.getDrawable(context.resources, R.drawable.pikachu, null)
 
@@ -14,17 +14,18 @@ class Pikachu(var x: Int, var y: Int, val radius: Int, context: Context) {
         updateRect()
     }
 
-    fun updatePosition(newX: Int, canvasWidth: Int) {
-        x = newX.coerceIn(radius, canvasWidth - radius)
+    fun updatePosition(centerX: Int, canvasWidth: Int) {
+        val targetX = centerX - (size / 2)
+        x = targetX.coerceIn(0, canvasWidth - size)
         updateRect()
     }
 
     private fun updateRect() {
         rect.set(
-            (x - radius).toFloat(),
-            (y - radius).toFloat(),
-            (x + radius).toFloat(),
-            (y + radius).toFloat()
+            x.toFloat(),
+            y.toFloat(),
+            (x + size).toFloat(),
+            (y + size).toFloat()
         )
     }
 
